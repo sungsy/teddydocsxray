@@ -65,3 +65,7 @@ Wer eine echte Lampe aufleuchten lassen will, solange „geröntgt" wird:
 3. Den Scanner mit `&licht=1` in der Adresse öffnen (z. B. `…/teddydocsxray/?raum=K7QF2&licht=1`). Erst dann erscheint im Startfenster (Taste `Q`) der Knopf **💡 Licht verbinden**. Draufklicken und den Arduino auswählen. Beim nächsten Mal verbindet sich die Seite automatisch, sobald der Arduino eingesteckt ist.
 
 Zum Testen reicht die eingebaute LED auf dem Arduino. Eine hellere Lampe (z. B. LED-Streifen) wird über ein Relais-Modul oder einen MOSFET an Pin 9 geschaltet, nie direkt an den Pin. Das funktioniert nur in Chrome/Edge (Web Serial). Ohne Arduino läuft alles ganz normal weiter.
+
+## Lizenz
+
+Der Code steht unter der [MIT-Lizenz](LICENSE) und darf frei weiterverwendet werden, zum Beispiel für andere Teddy-Kliniken. Die Bilder im Ordner `bilder/` sind davon ausgenommen; die Rechte daran liegen bei den jeweiligen Urhebern.
