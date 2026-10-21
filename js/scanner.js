@@ -1,12 +1,12 @@
-import { CONFIG } from './config.js';
+import { CONFIG, bildPfad, befundText } from './config.js';
 import { XraySound } from './sound.js';
 import { RemoteLink, getRoom, controllerUrl, store } from './remote.js';
 import { SerialLight } from './light.js';
 import { placeholderDataUrl } from './placeholder.js';
 
 const $ = (id) => document.getElementById(id);
-const IMAGES = CONFIG.bilder;
-const STATUS_TEXT = { idle: 'BEREIT', warmup: 'VORLAUF', exposing: 'AUFNAHME', result: 'BEFUND' };
+const TIERE = CONFIG.tiere;
+const DIAGNOSEN = CONFIG.diagnosen;
 
 const sound = new XraySound();
 const light = new SerialLight();
@@ -15,7 +15,8 @@ const remote = new RemoteLink(room, 'scanner');
 
 let state = 'idle';
 let started = false;
-let selected = Math.max(0, IMAGES.findIndex((img) => img.id === store.get('xray-auswahl')));
+let tierIndex = Math.max(0, TIERE.findIndex((t) => t.id === store.get('xray-tier')));
+let diagIndex = Math.max(0, DIAGNOSEN.findIndex((d) => d.id === store.get('xray-diagnose')));
 let patientNo = Number(store.get('xray-patient-nr')) || 1;
 let scanToken = 0;
 let resultTimer = 0;
@@ -23,12 +24,17 @@ let lastScanEnd = 0;
 let animations = [];
 
 // Resolve every image up front; missing files fall back to a generated placeholder
-const sources = IMAGES.map((entry, i) => new Promise((resolve) => {
-  const img = new Image();
-  img.onload = () => resolve(entry.datei);
-  img.onerror = () => resolve(placeholderDataUrl(entry, i));
-  img.src = entry.datei;
-}));
+const sources = new Map();
+TIERE.forEach((tier, i) => {
+  for (const diag of DIAGNOSEN) {
+    sources.set(`${tier.id}/${diag.id}`, new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img.src);
+      img.onerror = () => resolve(placeholderDataUrl(tier, i));
+      img.src = bildPfad(tier, diag);
+    }));
+  }
+});
 
 // ── State & rendering ───────────────────────────────────────
 
@@ -39,24 +45,32 @@ function setState(next) {
 }
 
 function publishStatus() {
-  if (remote.connected) remote.send('status', { online: true, state, id: IMAGES[selected].id }, { retain: true });
+  if (!remote.connected) return;
+  remote.send('status', { online: true, state, tier: TIERE[tierIndex].id, diagnose: DIAGNOSEN[diagIndex].id }, { retain: true });
 }
 
 function renderPatient() {
-  const entry = IMAGES[selected];
-  $('patientName').textContent = `${entry.emoji} ${entry.name}`;
-  $('idleEmoji').textContent = entry.emoji;
-  $('idleName').textContent = `${selected + 1} · ${entry.name}`;
+  const tier = TIERE[tierIndex];
+  const diag = DIAGNOSEN[diagIndex];
+  $('patientName').textContent = `${tier.emoji} ${tier.name}`;
+  $('idleEmoji').textContent = tier.emoji;
+  $('idleName').textContent = `${tierIndex + 1} · ${tier.name}`;
+  // Small hint for the helper only; the kids watch the big screen, not this corner
+  $('diagHint').textContent = `${diag.emoji} ${diag.name}`;
 }
 
-function select(index, { publish = true } = {}) {
-  if (!Number.isInteger(index) || index < 0 || index >= IMAGES.length) return;
-  const changed = index !== selected;
-  selected = index;
-  store.set('xray-auswahl', IMAGES[index].id);
+/** Selects animal and/or diagnosis; omitted values stay as they are. */
+function select({ tier = tierIndex, diagnose = diagIndex } = {}, { publish = true } = {}) {
+  if (!Number.isInteger(tier) || tier < 0 || tier >= TIERE.length) return;
+  if (!Number.isInteger(diagnose) || diagnose < 0 || diagnose >= DIAGNOSEN.length) return;
+  const changed = tier !== tierIndex || diagnose !== diagIndex;
+  tierIndex = tier;
+  diagIndex = diagnose;
+  store.set('xray-tier', TIERE[tier].id);
+  store.set('xray-diagnose', DIAGNOSEN[diagnose].id);
   renderPatient();
   if (changed) sound.blip();
-  if (publish) remote.send('select', { id: IMAGES[index].id }, { retain: true });
+  if (publish) remote.send('select', { tier: TIERE[tier].id, diagnose: DIAGNOSEN[diagnose].id }, { retain: true });
   publishStatus();
 }
 
@@ -68,8 +82,8 @@ async function scan() {
   if (state === 'warmup' || state === 'exposing') return;
   if (performance.now() - lastScanEnd < 1000) return; // ignore button mashing
   const token = ++scanToken;
-  const index = selected;
-  const entry = IMAGES[index];
+  const tier = TIERE[tierIndex];
+  const diag = DIAGNOSEN[diagIndex];
   const warm = CONFIG.aufwaermDauer;
   const expose = CONFIG.scanDauer;
   const start = performance.now();
@@ -85,7 +99,7 @@ async function scan() {
   runReadouts(token, start, warm, expose);
 
   const xray = $('xray');
-  xray.src = await sources[index];
+  xray.src = await sources.get(`${tier.id}/${diag.id}`);
   try { await xray.decode(); } catch { /* shown anyway */ }
   await sleep(Math.max(0, start + warm - performance.now()));
   if (token !== scanToken) return;
@@ -104,7 +118,7 @@ async function scan() {
   if (token !== scanToken) return;
 
   light.set(false);
-  $('findingText').textContent = entry.befund;
+  $('findingText').textContent = befundText(tier, diag);
   setState('result');
   lastScanEnd = performance.now();
   if (CONFIG.ergebnisAnzeigen > 0) resultTimer = setTimeout(reset, CONFIG.ergebnisAnzeigen);
@@ -211,13 +225,15 @@ function typeDigit(d) {
   digits += d;
   clearTimeout(digitTimer);
   const commit = () => {
-    select(Number(digits) - 1);
+    select({ tier: Number(digits) - 1 });
     digits = '';
   };
   // Wait briefly for a second digit unless no longer number could exist
-  if (Number(digits) * 10 > IMAGES.length) commit();
+  if (Number(digits) * 10 > TIERE.length) commit();
   else digitTimer = setTimeout(commit, 700);
 }
+
+const DIAG_KEYS = new Map(DIAGNOSEN.map((d, i) => [`Key${d.taste.toUpperCase()}`, i]));
 
 document.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -237,10 +253,16 @@ document.addEventListener('keydown', (e) => {
     if (!e.repeat) scan();
   } else if (/^(Digit|Numpad)\d$/.test(e.code)) {
     typeDigit(e.code.slice(-1));
-  } else if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
-    select((selected + 1) % IMAGES.length);
-  } else if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
-    select((selected - 1 + IMAGES.length) % IMAGES.length);
+  } else if (DIAG_KEYS.has(e.code)) {
+    select({ diagnose: DIAG_KEYS.get(e.code) });
+  } else if (e.code === 'ArrowRight') {
+    select({ tier: (tierIndex + 1) % TIERE.length });
+  } else if (e.code === 'ArrowLeft') {
+    select({ tier: (tierIndex - 1 + TIERE.length) % TIERE.length });
+  } else if (e.code === 'ArrowDown') {
+    select({ diagnose: (diagIndex + 1) % DIAGNOSEN.length });
+  } else if (e.code === 'ArrowUp') {
+    select({ diagnose: (diagIndex - 1 + DIAGNOSEN.length) % DIAGNOSEN.length });
   } else if (e.code === 'Backspace' || e.code === 'Escape') {
     reset();
   } else if (e.code === 'KeyQ') {
@@ -277,8 +299,10 @@ remote.addEventListener('connection', (e) => {
 });
 
 remote.addEventListener('select', (e) => {
-  const index = IMAGES.findIndex((img) => img.id === e.detail.id);
-  if (index >= 0 && index !== selected) select(index, { publish: false });
+  const tier = TIERE.findIndex((t) => t.id === e.detail.tier);
+  const diagnose = DIAGNOSEN.findIndex((d) => d.id === e.detail.diagnose);
+  if (tier < 0 || diagnose < 0) return;
+  if (tier !== tierIndex || diagnose !== diagIndex) select({ tier, diagnose }, { publish: false });
 });
 
 remote.addEventListener('cmd', (e) => {
@@ -289,6 +313,7 @@ remote.addEventListener('cmd', (e) => {
 
 // ── Boot ────────────────────────────────────────────────────
 
+document.title = `Röntgen · ${CONFIG.titel}`;
 $('title').textContent = CONFIG.titel;
 $('subtitle').textContent = CONFIG.untertitel;
 document.body.classList.toggle('no-tint', !CONFIG.toenung);

@@ -60,14 +60,15 @@ kbd {
 .bar.bottom kbd { text-transform: none; }
 
 .brand { display: flex; align-items: center; gap: 12px; color: var(--phos); }
-.brand .cross {
-  display: inline-grid;
-  place-items: center;
-  width: 1.8em;
-  height: 1.8em;
-  border: 1px solid var(--phos);
-  border-radius: 4px;
+.brand .logo {
+  width: 2.6em;
+  height: 2.6em;
+  padding: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px rgba(255, 170, 110, 0.35);
 }
+.diag-hint { color: var(--phos-dim); text-transform: none; letter-spacing: 0.05em; }
 .brand small { color: var(--phos-dim); font-size: 0.8em; }
 
 .conn { display: inline-flex; align-items: center; gap: 8px; text-align: right; }
@@ -341,6 +342,15 @@ body[data-state="exposing"] .lamp.xray i { background: var(--red); box-shadow: 0
   border: 1px solid var(--line-bright);
   border-radius: 12px;
   background: var(--panel);
+}
+.overlay-logo {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 14px;
+  padding: 4px;
+  border-radius: 50%;
+  background: #fff;
 }
 .card h1 { margin: 0 0 6px; font-size: 28px; font-weight: 400; letter-spacing: 0.12em; color: var(--phos); }
 .card p { margin: 0 0 18px; line-height: 1.5; color: var(--phos-dim); }

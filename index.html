@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teddy-Röntgen</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩻</text></svg>">
+  <title>Röntgen · Teddy-Docs FAU</title>
+  <link rel="icon" href="img/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 <body data-state="idle">
   <div id="app">
     <header class="bar top">
-      <div class="brand"><span class="cross">✚</span><span id="title">Teddy-Klinik</span><small id="subtitle">Röntgenabteilung</small></div>
+      <div class="brand"><img class="logo" src="img/logo.png" alt=""><span id="title">Teddy-Docs FAU</span><small id="subtitle">Standort Bayreuth</small></div>
       <div id="clock"></div>
     </header>
 
@@ -56,7 +56,7 @@
     </main>
 
     <footer class="bar bottom">
-      <span><kbd>Leertaste</kbd> Aufnahme · <kbd>Q</kbd> Einstellungen</span>
+      <span><kbd>Leertaste</kbd> Aufnahme · <kbd>Q</kbd> Einstellungen · <span class="diag-hint" id="diagHint"></span></span>
       <span class="conn"><i class="dot" id="connDot"></i><span id="connText">Steuerung: verbinde …</span></span>
     </footer>
   </div>
@@ -64,12 +64,13 @@
   <div class="overlay" id="overlay">
     <div class="card">
       <div>
+        <img class="overlay-logo" src="img/logo.png" alt="Teddybärkrankenhaus am Medizincampus Oberfranken">
         <h1>Röntgen-Station</h1>
-        <p>Mit dem Handy den QR-Code scannen, um auszuwählen, welches Röntgenbild als Nächstes erscheint. Ohne Handy geht's auch per Tastatur.</p>
+        <p>Mit dem Handy den QR-Code scannen, um Tier und Diagnose für die nächste Aufnahme auszuwählen. Ohne Handy geht's auch per Tastatur.</p>
         <dl class="keys">
           <dt><kbd>Leertaste</kbd></dt><dd>Aufnahme starten (oder auf den Bildschirm tippen)</dd>
-          <dt><kbd>1</kbd> … <kbd>15</kbd></dt><dd>Tier wählen (Zahl tippen)</dd>
-          <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Tier vor / zurück</dd>
+          <dt><kbd>1</kbd> … <kbd>12</kbd></dt><dd>Tier wählen (Zahl tippen) · <kbd>←</kbd> <kbd>→</kbd> blättern</dd>
+          <dt><kbd>G</kbd> <kbd>B</kbd> <kbd>H</kbd> <kbd>V</kbd></dt><dd>Gesund · Bruch · Herz · Verschluckt (<kbd>↑</kbd> <kbd>↓</kbd> blättern)</dd>
           <dt><kbd>⌫</kbd></dt><dd>Zurück zu „Bereit"</dd>
           <dt><kbd>F</kbd> <kbd>M</kbd> <kbd>Q</kbd></dt><dd>Vollbild · Ton aus/an · dieses Fenster</dd>
         </dl>

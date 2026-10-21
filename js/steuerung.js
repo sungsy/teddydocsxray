@@ -1,8 +1,9 @@
-import { CONFIG } from './config.js';
+import { CONFIG, bildPfad, befundText } from './config.js';
 import { RemoteLink, getRoom, lastRoom, normalizeRoom } from './remote.js';
 
 const $ = (id) => document.getElementById(id);
-const IMAGES = CONFIG.bilder;
+const TIERE = CONFIG.tiere;
+const DIAGNOSEN = CONFIG.diagnosen;
 const SCANNER_TEXT = {
   idle: 'Scanner bereit',
   warmup: 'Gerät fährt hoch …',
@@ -26,49 +27,60 @@ function showJoin() {
   });
 }
 
+function makeButton(className, emoji, label, num) {
+  const btn = document.createElement('button');
+  btn.className = className;
+  btn.setAttribute('aria-pressed', 'false');
+  if (num) {
+    const n = document.createElement('span');
+    n.className = 'num';
+    n.textContent = num;
+    btn.append(n);
+  }
+  const icon = document.createElement('span');
+  icon.className = 'icon';
+  icon.textContent = emoji;
+  const name = document.createElement('span');
+  name.className = 'name';
+  name.textContent = label;
+  btn.append(icon, name);
+  return btn;
+}
+
 function showController(room) {
   $('app').hidden = false;
   $('room').textContent = room;
   const remote = new RemoteLink(room, 'controller');
-  const buttons = new Map();
+  let tier = TIERE[0];
+  let diagnose = DIAGNOSEN[0];
 
-  IMAGES.forEach((entry, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'animal';
-    btn.setAttribute('aria-pressed', 'false');
-
-    const num = document.createElement('span');
-    num.className = 'num';
-    num.textContent = String(i + 1);
-
-    const thumb = document.createElement('span');
-    thumb.className = 'thumb';
-    thumb.textContent = entry.emoji;
-    const img = new Image();
-    img.alt = '';
-    img.onload = () => {
-      thumb.textContent = '';
-      thumb.classList.add('has-img');
-      thumb.append(img);
-    };
-    img.src = entry.datei;
-
-    const name = document.createElement('span');
-    name.className = 'name';
-    name.textContent = entry.name;
-
-    btn.append(num, thumb, name);
-    btn.addEventListener('click', () => {
-      markSelected(entry.id);
-      navigator.vibrate?.(15);
-      remote.send('select', { id: entry.id }, { retain: true });
-    });
-    $('grid').append(btn);
-    buttons.set(entry.id, btn);
+  const tierButtons = TIERE.map((t, i) => {
+    const btn = makeButton('choice animal', t.emoji, t.name, String(i + 1));
+    btn.addEventListener('click', () => choose(t, diagnose));
+    $('animals').append(btn);
+    return btn;
+  });
+  const diagButtons = DIAGNOSEN.map((d) => {
+    const btn = makeButton('choice diagnosis', d.emoji, d.name);
+    btn.addEventListener('click', () => choose(tier, d));
+    $('diagnoses').append(btn);
+    return btn;
   });
 
-  function markSelected(id) {
-    for (const [key, btn] of buttons) btn.setAttribute('aria-pressed', String(key === id));
+  function render() {
+    TIERE.forEach((t, i) => tierButtons[i].setAttribute('aria-pressed', String(t === tier)));
+    DIAGNOSEN.forEach((d, i) => diagButtons[i].setAttribute('aria-pressed', String(d === diagnose)));
+    $('previewImg').src = bildPfad(tier, diagnose);
+    $('previewTitle').textContent = `${tier.emoji} ${tier.name} · ${diagnose.name}`;
+    $('previewText').textContent = befundText(tier, diagnose);
+  }
+
+  function choose(t, d) {
+    tier = t;
+    diagnose = d;
+    render();
+    navigator.vibrate?.(15);
+    remote.send('select', { tier: t.id, diagnose: d.id }, { retain: true });
   }
 
   $('scanBtn').addEventListener('click', () => {
@@ -85,18 +97,26 @@ function showController(room) {
   });
 
   remote.addEventListener('select', (e) => {
-    if (buttons.has(e.detail.id)) markSelected(e.detail.id);
+    const t = TIERE.find((x) => x.id === e.detail.tier);
+    const d = DIAGNOSEN.find((x) => x.id === e.detail.diagnose);
+    if (!t || !d) return;
+    tier = t;
+    diagnose = d;
+    render();
   });
 
   remote.addEventListener('status', (e) => {
-    const { online, state, id } = e.detail;
-    const entry = IMAGES.find((img) => img.id === id);
-    $('scannerDot').className = `dot ${!online ? 'bad' : state === 'exposing' || state === 'warmup' ? 'warn' : 'ok'}`;
+    const { online, state } = e.detail;
+    const t = TIERE.find((x) => x.id === e.detail.tier);
+    const d = DIAGNOSEN.find((x) => x.id === e.detail.diagnose);
+    const busy = state === 'warmup' || state === 'exposing';
+    $('scannerDot').className = `dot ${!online ? 'bad' : busy ? 'warn' : 'ok'}`;
     $('scannerText').textContent = online
-      ? `${SCANNER_TEXT[state] || 'Scanner online'}${entry ? ` · ${entry.emoji} ${entry.name}` : ''}`
+      ? `${SCANNER_TEXT[state] || 'Scanner online'}${t && d ? ` · ${t.emoji} ${t.name}, ${d.name}` : ''}`
       : 'Scanner offline – ist die Seite dort geöffnet?';
-    $('scanBtn').disabled = online && (state === 'warmup' || state === 'exposing');
+    $('scanBtn').disabled = online && busy;
   });
 
+  render();
   remote.connect();
 }

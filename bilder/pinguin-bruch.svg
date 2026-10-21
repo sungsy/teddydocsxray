@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+<defs>
+<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
+<filter id="edge" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5"/></filter>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shine" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="fluff" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="52"/><feColorMatrix type="matrix" values="0 0 0 0 0.75  0 0 0 0 0.86  0 0 0 0 0.95  0.55 0 0 0 -0.17"/></filter>
+<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="59"/><feColorMatrix type="matrix" values="0 0 0 0 0.8  0 0 0 0 0.9  0 0 0 0 1  0.3 0 0 0 -0.08"/></filter>
+<radialGradient id="vignette" cx="50%" cy="50%" r="70%"><stop offset="60%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity="0.75"/></radialGradient>
+<clipPath id="body"><ellipse cx="450" cy="330" rx="175" ry="640"/><path d="M 300 760 Q 250 980 380 1130 Q 460 1170 560 1110 Q 640 940 600 760 Z"/></clipPath>
+
+</defs>
+<rect width="900" height="1200" fill="#000"/>
+<g transform="rotate(-14 450 640) translate(30 40)">
+<g fill="#8fb0c8" fill-opacity="0.24" filter="url(#soft)"><ellipse cx="450" cy="330" rx="175" ry="640"/><path d="M 300 760 Q 250 980 380 1130 Q 460 1170 560 1110 Q 640 940 600 760 Z"/></g>
+<g fill="none" stroke="#b4dcf4" stroke-opacity="0.22" stroke-width="5" filter="url(#edge)"><ellipse cx="450" cy="330" rx="175" ry="640"/><path d="M 300 760 Q 250 980 380 1130 Q 460 1170 560 1110 Q 640 940 600 760 Z"/></g>
+<rect width="900" height="1200" filter="url(#fluff)" clip-path="url(#body)"/>
+<g fill="none" stroke="#cfe9fa" stroke-opacity="0.32" stroke-width="3" stroke-dasharray="10 8"><path d="M 300 -40 Q 290 400 320 760"/></g>
+<g fill="#e3f3ff" stroke="#e3f3ff" opacity="0.56" filter="url(#glow)"><line x1="530" y1="-120" x2="525" y2="760" stroke-width="32" stroke-linecap="round"/><circle cx="543.4" cy="-121.5" r="16" stroke="none"/><circle cx="516.6" cy="-121.7" r="16" stroke="none"/><circle cx="538.4" cy="761.7" r="16" stroke="none"/><circle cx="511.6" cy="761.5" r="16" stroke="none"/><path d="M 379 -160 L 441 -160 L 446 292 L 434 314 L 421 294 L 408 320 L 394 298 L 382 310 Z" stroke="none"/><path d="M 416 378 L 427 352 L 440 372 L 453 348 L 466 370 L 480 358 L 456 760 L 394 760 Z" stroke="none"/><line x1="425" y1="700" x2="424" y2="770" stroke-width="62" stroke-linecap="round"/><circle cx="451.1" cy="697.3" r="31" stroke="none"/><circle cx="399" cy="696.5" r="31" stroke="none"/><circle cx="450" cy="773.5" r="31" stroke="none"/><circle cx="397.9" cy="772.7" r="31" stroke="none"/><ellipse cx="395" cy="800" rx="24" ry="18" stroke="none"/><ellipse cx="450" cy="795" rx="24" ry="18" stroke="none"/><ellipse cx="505" cy="800" rx="24" ry="18" stroke="none"/><ellipse cx="420" cy="840" rx="24" ry="18" stroke="none"/><ellipse cx="480" cy="842" rx="24" ry="18" stroke="none"/><line x1="410" y1="870" x2="380" y2="1000" stroke-width="22" stroke-linecap="round"/><circle cx="419.3" cy="871" r="11" stroke="none"/><circle cx="401.2" cy="866.9" r="11" stroke="none"/><circle cx="388.8" cy="1003.1" r="11" stroke="none"/><circle cx="370.7" cy="999" r="11" stroke="none"/><line x1="378" y1="1015" x2="372" y2="1090" stroke-width="14" stroke-linecap="round"/><circle cx="383.9" cy="1014.8" r="7" stroke="none"/><circle cx="372.2" cy="1013.8" r="7" stroke="none"/><circle cx="377.8" cy="1091.2" r="7" stroke="none"/><circle cx="366.1" cy="1090.2" r="7" stroke="none"/><line x1="450" y1="870" x2="450" y2="1000" stroke-width="22" stroke-linecap="round"/><circle cx="459.2" cy="868.9" r="11" stroke="none"/><circle cx="440.8" cy="868.9" r="11" stroke="none"/><circle cx="459.2" cy="1001.1" r="11" stroke="none"/><circle cx="440.8" cy="1001.1" r="11" stroke="none"/><line x1="450" y1="1015" x2="450" y2="1090" stroke-width="14" stroke-linecap="round"/><circle cx="455.9" cy="1014.3" r="7" stroke="none"/><circle cx="444.1" cy="1014.3" r="7" stroke="none"/><circle cx="455.9" cy="1090.7" r="7" stroke="none"/><circle cx="444.1" cy="1090.7" r="7" stroke="none"/><line x1="490" y1="870" x2="520" y2="1000" stroke-width="22" stroke-linecap="round"/><circle cx="498.8" cy="866.9" r="11" stroke="none"/><circle cx="480.7" cy="871" r="11" stroke="none"/><circle cx="529.3" cy="999" r="11" stroke="none"/><circle cx="511.2" cy="1003.1" r="11" stroke="none"/><line x1="522" y1="1015" x2="528" y2="1090" stroke-width="14" stroke-linecap="round"/><circle cx="527.8" cy="1013.8" r="7" stroke="none"/><circle cx="516.1" cy="1014.8" r="7" stroke="none"/><circle cx="533.9" cy="1090.2" r="7" stroke="none"/><circle cx="522.2" cy="1091.2" r="7" stroke="none"/></g>
+<g fill="#000" opacity="0.55"></g>
+<g fill="#eef8ff" opacity="0.8" filter="url(#shine)"></g>
+<g fill="#f6fcff" opacity="0.95" filter="url(#glow)"><path d="M 372 346 L 388 336 L 384 360 Z" opacity="0.6"/><path d="M 476 318 L 494 312 L 488 332 Z" opacity="0.6"/><path d="M 452 326 L 462 322 L 458 334 Z" opacity="0.5"/></g>
+<g fill="#000" opacity="0.85"></g>
+<g fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="4" stroke-dasharray="14 10"><circle cx="432" cy="336" r="120"/></g>
+</g>
+<rect width="900" height="1200" filter="url(#grain)"/>
+<rect width="900" height="1200" fill="url(#vignette)"/>
+<g fill="#a6dcf2" fill-opacity="0.78" font-family="Menlo, Consolas, monospace" font-size="26" letter-spacing="2">
+<text x="40" y="62">TEDDY-DOCS FAU · BAYREUTH</text>
+<text x="40" y="98">PATIENT: PINGUIN</text>
+<text x="40" y="1160" font-size="22" fill-opacity="0.6">DETAILAUFNAHME</text>
+<text x="860" y="1160" font-size="22" fill-opacity="0.6" text-anchor="end">TD-062</text>
+<text x="850" y="90" font-size="60" font-weight="bold" text-anchor="end">R</text>
+</g>
+</svg>

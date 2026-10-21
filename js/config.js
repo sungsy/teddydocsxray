@@ -1,11 +1,11 @@
 // ─────────────────────────────────────────────────────────────
 //  Einstellungen der Teddy-Röntgen-Station
-//  Hier können Tiere, Bilder und Befunde angepasst werden.
+//  Hier können Tiere, Diagnosen und Befundtexte angepasst werden.
 // ─────────────────────────────────────────────────────────────
 
 export const CONFIG = {
-  titel: 'Teddy-Klinik',
-  untertitel: 'Röntgenabteilung',
+  titel: 'Teddy-Docs FAU',
+  untertitel: 'Standort Bayreuth',
 
   // Zeiten in Millisekunden
   aufwaermDauer: 1800,      // Maschine "fährt hoch"
@@ -18,23 +18,37 @@ export const CONFIG = {
   // Öffentlicher MQTT-Server für die Fernsteuerung (kostenlos, ohne Anmeldung)
   mqttBroker: 'wss://broker.hivemq.com:8884/mqtt',
 
+  // Taste = Tastenkürzel am Scanner-Laptop
+  diagnosen: [
+    { id: 'gesund',     name: 'Gesund',           emoji: '💚', taste: 'G', befund: 'Kerngesund! Alles ist an seinem Platz.' },
+    { id: 'bruch',      name: 'Knochenbruch',     emoji: '🦴', taste: 'B', befund: 'Knochenbruch! Ein Verband und viel Kuscheln helfen beim Heilen.' },
+    { id: 'herz',       name: 'Gebrochenes Herz', emoji: '💔', taste: 'H', befund: 'Ein gebrochenes Herz! Da hilft nur ganz viel Kuscheln.' },
+    { id: 'gegenstand', name: 'Verschluckt',      emoji: '🔎', taste: 'V', befund: 'Da wurde etwas verschluckt!' },
+  ],
+
   // Reihenfolge = Nummer auf der Tastatur bzw. in der Steuerung.
-  // Fehlt eine Bilddatei, wird automatisch ein Platzhalter angezeigt.
-  bilder: [
-    { id: 'baer',    name: 'Bär',      emoji: '🐻', datei: 'bilder/baer.jpg',    befund: 'Ein Legostein im Bauch!' },
-    { id: 'hase',    name: 'Hase',     emoji: '🐰', datei: 'bilder/hase.jpg',    befund: 'Eine Karotte hat sich versteckt.' },
-    { id: 'hund',    name: 'Hund',     emoji: '🐶', datei: 'bilder/hund.jpg',    befund: 'Ein Knochen – aber nicht seiner!' },
-    { id: 'katze',   name: 'Katze',    emoji: '🐱', datei: 'bilder/katze.jpg',   befund: 'Ein verschluckter Wollknäuel.' },
-    { id: 'elefant', name: 'Elefant',  emoji: '🐘', datei: 'bilder/elefant.jpg', befund: 'Eine Erdnuss im Rüssel.' },
-    { id: 'loewe',   name: 'Löwe',     emoji: '🦁', datei: 'bilder/loewe.jpg',   befund: 'Eine Krone im Bauch – ganz königlich!' },
-    { id: 'giraffe', name: 'Giraffe',  emoji: '🦒', datei: 'bilder/giraffe.jpg', befund: 'Ein Schlüssel ganz oben im Hals.' },
-    { id: 'pferd',   name: 'Pferd',    emoji: '🐴', datei: 'bilder/pferd.jpg',   befund: 'Ein Hufeisen – das bringt Glück!' },
-    { id: 'schaf',   name: 'Schaf',    emoji: '🐑', datei: 'bilder/schaf.jpg',   befund: 'Eine Murmel in der Wolle.' },
-    { id: 'kuh',     name: 'Kuh',      emoji: '🐮', datei: 'bilder/kuh.jpg',     befund: 'Eine Glocke im Bauch – bimmel bimmel!' },
-    { id: 'affe',    name: 'Affe',     emoji: '🐵', datei: 'bilder/affe.jpg',    befund: 'Eine ganze Banane!' },
-    { id: 'pinguin', name: 'Pinguin',  emoji: '🐧', datei: 'bilder/pinguin.jpg', befund: 'Ein Fisch für unterwegs.' },
-    { id: 'dino',    name: 'Dino',     emoji: '🦖', datei: 'bilder/dino.jpg',    befund: 'Ein Dino-Ei im Bauch!' },
-    { id: 'einhorn', name: 'Einhorn',  emoji: '🦄', datei: 'bilder/einhorn.jpg', befund: 'Ein Glitzerstern im Herzen.' },
-    { id: 'ente',    name: 'Ente',     emoji: '🦆', datei: 'bilder/ente.jpg',    befund: 'Eine Gummiente in der Ente!' },
+  // Bilder liegen unter bilder/<tier>-<diagnose>.svg (erzeugt mit tools/roentgenbilder.py).
+  // Mit "befunde" lässt sich der Text einzelner Diagnosen pro Tier überschreiben.
+  tiere: [
+    { id: 'hase',    name: 'Hase',    emoji: '🐰', befunde: { gegenstand: 'Eine ganze Karotte verschluckt!' } },
+    { id: 'hund',    name: 'Hund',    emoji: '🐶', befunde: { gegenstand: 'Ein Schlüssel! Den haben alle gesucht.' } },
+    { id: 'katze',   name: 'Katze',   emoji: '🐱', befunde: { gegenstand: 'Ein Glöckchen im Bauch – kling, kling!' } },
+    { id: 'baer',    name: 'Bär',     emoji: '🐻', befunde: { gegenstand: 'Ein Legostein im Bauch!' } },
+    { id: 'pferd',   name: 'Pferd',   emoji: '🐴', befunde: { gegenstand: 'Ein Hufeisen im Bauch – das bringt Glück!' } },
+    { id: 'pinguin', name: 'Pinguin', emoji: '🐧', befunde: { gegenstand: 'Ein ganzer Fisch – nur noch die Gräten!' } },
+    { id: 'elefant', name: 'Elefant', emoji: '🐘', befunde: { gegenstand: 'Eine Erdnuss verschluckt!' } },
+    { id: 'puppe',   name: 'Puppe',   emoji: '👧', befunde: { gegenstand: 'Ein Schnuller im Bauch!' } },
+    { id: 'dino',    name: 'Dino',    emoji: '🦖', befunde: { gegenstand: 'Ein Spielzeugauto verschluckt – brumm, brumm!' } },
+    { id: 'ente',    name: 'Ente',    emoji: '🦆', befunde: { gegenstand: 'Eine Gummiente in der Ente!' } },
+    { id: 'affe',    name: 'Affe',    emoji: '🐵', befunde: { gegenstand: 'Eine ganze Banane verschluckt!' } },
+    { id: 'loewe',   name: 'Löwe',    emoji: '🦁', befunde: { gegenstand: 'Eine Krone im Bauch – ganz königlich!' } },
   ],
 };
+
+export function bildPfad(tier, diagnose) {
+  return tier.bilder?.[diagnose.id] ?? `bilder/${tier.id}-${diagnose.id}.svg`;
+}
+
+export function befundText(tier, diagnose) {
+  return tier.befunde?.[diagnose.id] ?? diagnose.befund;
+}
