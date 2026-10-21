@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Röntgen-Steuerung</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩻</text></svg>">
+  <link rel="stylesheet" href="css/steuerung.css">
+  <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+  <script type="module" src="js/steuerung.js"></script>
+</head>
+<body>
+  <section class="join" id="join" hidden>
+    <form class="join-card" id="joinForm">
+      <h1>🩻 Röntgen-Steuerung</h1>
+      <p>Raum-Code vom Scanner-Bildschirm eingeben (dort mit <b>Q</b> anzeigen) oder den QR-Code scannen.</p>
+      <input id="joinInput" name="raum" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. K7QF2" maxlength="12" required>
+      <button class="big primary" type="submit">Verbinden</button>
+    </form>
+  </section>
+
+  <div class="app" id="app" hidden>
+    <header class="top">
+      <div>
+        <h1>Röntgen-Steuerung</h1>
+        <div class="sub">Raum <b id="room">—</b> · <a href="steuerung.html?neu=1">wechseln</a></div>
+      </div>
+      <span class="pill"><i class="dot" id="connDot"></i><span id="connText">Verbinde …</span></span>
+    </header>
+
+    <div class="scanner"><i class="dot" id="scannerDot"></i><span id="scannerText">Warte auf Scanner …</span></div>
+
+    <main>
+      <p class="label">Nächster Patient</p>
+      <div class="grid" id="grid"></div>
+    </main>
+
+    <footer class="actions">
+      <button class="big secondary" id="resetBtn">↺ Bereit</button>
+      <button class="big primary" id="scanBtn">📸 Aufnahme starten</button>
+    </footer>
+  </div>
+</body>
+</html>

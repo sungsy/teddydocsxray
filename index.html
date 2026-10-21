@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teddy-Röntgen</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩻</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/scanner.css">
+  <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script type="module" src="js/scanner.js"></script>
+</head>
+<body data-state="idle">
+  <div id="app">
+    <header class="bar top">
+      <div class="brand"><span class="cross">✚</span><span id="title">Teddy-Klinik</span><small id="subtitle">Röntgenabteilung</small></div>
+      <div id="clock"></div>
+    </header>
+
+    <main class="main">
+      <section class="viewport" id="viewport">
+        <img id="xray" alt="">
+        <div class="tint"></div>
+        <div class="scanbar" id="scanbar"></div>
+        <div class="flash" id="flash"></div>
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+
+        <div class="idle">
+          <div class="ring" id="idleEmoji">🧸</div>
+          <div class="ready">BEREIT</div>
+          <div class="next">Nächster Patient: <span id="idleName">—</span></div>
+          <div class="hint">Kuscheltier hinlegen und <kbd>Leertaste</kbd> drücken</div>
+        </div>
+
+        <div class="banner warm">Gerät fährt hoch …</div>
+        <div class="banner xray">⚡ Aufnahme läuft – stillhalten!</div>
+        <div class="finding"><span class="label">Befund</span><span id="findingText"></span></div>
+      </section>
+
+      <aside class="panel">
+        <div class="readout"><label>Patient</label><div class="value" id="patientName">—</div></div>
+        <div class="readout"><label>Patienten-Nr.</label><div class="value" id="patientNo">—</div></div>
+        <div class="readout"><label>Spannung</label><div class="value"><span id="kv">0</span> <small>kV</small></div></div>
+        <div class="readout"><label>Strom</label><div class="value"><span id="ma">0</span> <small>mA</small></div></div>
+        <div class="readout"><label>Belichtung</label><div class="value"><span id="exp">0.00</span> <small>s</small></div></div>
+        <div class="meter"><div id="meter"></div></div>
+        <div class="lamps">
+          <div class="lamp ready"><i></i>Bereit</div>
+          <div class="lamp warm"><i></i>Vorlauf</div>
+          <div class="lamp xray"><i></i>Strahl</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="bar bottom">
+      <span><kbd>Leertaste</kbd> Aufnahme · <kbd>Q</kbd> Einstellungen</span>
+      <span class="conn"><i class="dot" id="connDot"></i><span id="connText">Steuerung: verbinde …</span></span>
+    </footer>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="card">
+      <div>
+        <h1>Röntgen-Station</h1>
+        <p>Mit dem Handy den QR-Code scannen, um auszuwählen, welches Röntgenbild als Nächstes erscheint. Ohne Handy geht's auch per Tastatur.</p>
+        <dl class="keys">
+          <dt><kbd>Leertaste</kbd></dt><dd>Aufnahme starten (oder auf den Bildschirm tippen)</dd>
+          <dt><kbd>1</kbd> … <kbd>15</kbd></dt><dd>Tier wählen (Zahl tippen)</dd>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Tier vor / zurück</dd>
+          <dt><kbd>⌫</kbd></dt><dd>Zurück zu „Bereit"</dd>
+          <dt><kbd>F</kbd> <kbd>M</kbd> <kbd>Q</kbd></dt><dd>Vollbild · Ton aus/an · dieses Fenster</dd>
+        </dl>
+        <div class="actions">
+          <button class="btn primary" id="startBtn">Starten</button>
+          <button class="btn" id="lightBtn" hidden>💡 Licht verbinden (optional)</button>
+        </div>
+      </div>
+      <div class="qrbox">
+        <div class="qr" id="qr"></div>
+        <div class="room-label">Raum</div>
+        <div class="room" id="roomCode">—</div>
+        <a id="controlLink" target="_blank" rel="noopener">Steuerung öffnen</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
