@@ -1,5 +1,8 @@
 # 🩻 Teddy-Röntgen
 
+**👉 Scanner starten: https://sungsy.github.io/teddydocsxray/**
+(Die Handy-Steuerung öffnet sich über den QR-Code im Startfenster oder direkt unter https://sungsy.github.io/teddydocsxray/steuerung.html)
+
 Ein Röntgengerät zum Spielen für die Teddy-Klinik: Kinder legen ihr Kuscheltier unter das „Gerät", drücken die Leertaste, die Maschine summt und piept – und auf dem Bildschirm erscheint das Röntgenbild mit Befund („Ein Legostein im Bauch!").
 
 - **`index.html`** – der Scanner-Bildschirm (Laptop/Monitor am Gerät)
